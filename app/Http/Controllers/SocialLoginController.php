@@ -34,15 +34,17 @@ class SocialLoginController extends Controller
             'profile_photo_path' => $hasPhoto ? $alreadyExistingUser->profile_photo_path : $user->getAvatar()
         ]);
 
-        // create a personal team for the user
-        $newTeam = Team::forceCreate([
-            'user_id' => $newUser->id,
-            'name' => explode(' ', $user->name, 2)[0]."'s Team",
-            'personal_team' => true,
-        ]);
-        // save the team and add the team to the user.
-        $newTeam->save();
-        $newUser->current_team_id = $newTeam->id;
+        if (!$alreadyExistingUser) {
+            // create a personal team for the user
+            $newTeam = Team::forceCreate([
+                'user_id' => $newUser->id,
+                'name' => explode(' ', $user->name, 2)[0]."'s Team",
+                'personal_team' => true,
+            ]);
+            // save the team and add the team to the user.
+            $newTeam->save();
+            $newUser->current_team_id = $newTeam->id;
+        }
         $newUser->save();
 
         Auth::login($newUser);
