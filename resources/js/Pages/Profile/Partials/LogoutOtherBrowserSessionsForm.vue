@@ -1,6 +1,6 @@
 <script setup>
-import { ref } from 'vue';
-import { useForm } from '@inertiajs/vue3';
+import { ref, computed } from 'vue';
+import { useForm, usePage } from '@inertiajs/vue3';
 import ActionMessage from '@/Components/ActionMessage.vue';
 import ActionSection from '@/Components/ActionSection.vue';
 import DialogModal from '@/Components/DialogModal.vue';
@@ -15,6 +15,12 @@ defineProps({
 
 const confirmingLogout = ref(false);
 const passwordInput = ref(null);
+
+const sessionsApplicableToUser = computed(
+    () => {
+        return !usePage().props.auth.user.is_social
+    }
+)
 
 const form = useForm({
     password: '',
@@ -43,7 +49,7 @@ const closeModal = () => {
 </script>
 
 <template>
-    <ActionSection>
+    <ActionSection v-if="sessionsApplicableToUser" class="mt-10 sm:mt-0">
         <template #title>
             Browser Sessions
         </template>

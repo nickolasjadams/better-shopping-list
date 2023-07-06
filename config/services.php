@@ -35,20 +35,21 @@ return [
     'github' => [
         'client_id' => env('GITHUB_CLIENT_ID'),
         'client_secret' => env('GITHUB_CLIENT_SECRET'),
-        'redirect' => env('REDIRECT_LOGIN')
+        'redirect' => env('GITHUB_REDIRECT')
     ],
 
     // https://console.cloud.google.com/apis/credentials
     'google' => [
         'client_id' => env('GOOGLE_CLIENT_ID'),
         'client_secret' => env('GOOGLE_CLIENT_SECRET'),
-        'redirect' => env('REDIRECT_LOGIN')
+        'redirect' => env('GOOGLE_REDIRECT')
     ],
 
-    // 'facebook' => [
-    //     'client_id' => env('FACEBOOK_CLIENT_ID'),
-    //     'client_secret' => env('FACEBOOK_CLIENT_SECRET'),
-    //     'redirect' => env('REDIRECT_LOGIN')
-    // ],
+    // https://developers.facebook.com/apps/941885420397169/dashboard/
+    'facebook' => [
+        'client_id' => env('FACEBOOK_CLIENT_ID'),
+        'client_secret' => env('FACEBOOK_CLIENT_SECRET'),
+        'redirect' => env('FACEBOOK_REDIRECT')
+    ],
 
 ];

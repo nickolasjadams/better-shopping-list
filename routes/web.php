@@ -3,7 +3,7 @@
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
-use Laravel\Socialite\Facades\Socialite;
+use App\Http\Controllers\SocialLoginController;
 
 /*
 |--------------------------------------------------------------------------
@@ -15,7 +15,6 @@ use Laravel\Socialite\Facades\Socialite;
 | contains the "web" middleware group. Now create something great!
 |
 */
-
 Route::get('/', function () {
     return Inertia::render('Welcome', [
         'canLogin' => Route::has('login'),
@@ -30,17 +29,10 @@ Route::middleware([
     config('jetstream.auth_session'),
     'verified',
 ])->group(function () {
-    Route::get('/dashboard', function () {
-        return Inertia::render('Dashboard');
-    })->name('dashboard');
+    Route::get('/lists', function () {
+        return Inertia::render('Lists');
+    })->name('lists');
 });
 
-Route::get('/auth/redirect', function () {
-    return Socialite::driver('github')->redirect();
-});
- 
-Route::get('/auth/callback', function () {
-    $user = Socialite::driver('github')->user();
- 
-    // $user->token
-});
+Route::get('/auth/redirect/{provider}', [SocialLoginController::class, 'providerRedirect']);
+Route::get('/auth/callback/{provider}', [SocialLoginController::class, 'providerCallback']);

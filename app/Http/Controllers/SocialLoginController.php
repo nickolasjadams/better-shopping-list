@@ -3,53 +3,50 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
-use Illuminate\Http\Request;
 use Laravel\Socialite\Facades\Socialite;
+use Illuminate\Support\Facades\Auth;
+use App\Models\Team;
+use Illuminate\Support\Facades\Hash;
+
 
 class SocialLoginController extends Controller
 {
 
-    function githubRedirect() {
-        return Socialite::driver('github')->redirect();
+    function providerRedirect(String $provider) {
+        return Socialite::driver($provider)->stateless()->redirect();
     }
-    function githubCallback() {
-        
 
+    function providerCallback(String $provider) {
+        $user = Socialite::driver($provider)->stateless()->user();
 
+        $alreadyExistingUser = User::where($provider . '_id', $user->id)->first();
+        $hasPhoto = isset($alreadyExistingUser->profile_photo_path);
 
-        $githubUser = Socialite::driver('github')->user();
-        
-        $user = User::where('github_id', $githubUser->id)->first();
-        
-        if ($user) {
-            $user->update([
-                'github_token' => $githubUser->token,
-                'github_refresh_token' => $githubUser->refreshToken,
-            ]);
-        } else {
-            $user = User::create([
-                'name' => $githubUser->name,
-                'email' => $githubUser->email,
-                'github_id' => $githubUser->id,
-                'github_token' => $githubUser->token,
-                'github_refresh_token' => $githubUser->refreshToken,
-            ]);
-        }
+        $newUser = User::updateOrCreate([
+            $provider . '_id' => $user->id,
+        ], [
+            'social_user' => true,
+            'name' => $user->name,
+            'social_email' => $user->email,
+            'password' => Hash::make($user->name . $user->email),
+            $provider . '_token' => $user->token,
+            $provider . '_refresh_token' => $user->refreshToken,
+            'profile_photo_path' => $hasPhoto ? $alreadyExistingUser->profile_photo_path : $user->getAvatar()
+        ]);
 
-        // $newTeam = Team::forceCreate([
-        //     'user_id' => $newUser->id,
-        //     'name' => explode(' ', $user->name, 2)[0]."'s Team",
-        //     'personal_team' => true,
-        // ]);
-        // // save the team and add the team to the user.
-        // $newTeam->save();
-        // $newUser->current_team_id = $newTeam->id;
-        // $newUser->save();
-        
-        Auth::login($user);
-        
-        return redirect('/dashboard');
-        
-        // $user->token
+        // create a personal team for the user
+        $newTeam = Team::forceCreate([
+            'user_id' => $newUser->id,
+            'name' => explode(' ', $user->name, 2)[0]."'s Team",
+            'personal_team' => true,
+        ]);
+        // save the team and add the team to the user.
+        $newTeam->save();
+        $newUser->current_team_id = $newTeam->id;
+        $newUser->save();
+
+        Auth::login($newUser);
+
+        return redirect('/lists');
     }
 }
