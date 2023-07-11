@@ -10,6 +10,13 @@ let darkMode = (
     (!('color-theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)
 );
 
+const props = defineProps({
+    lists: {
+        type: Object,
+        default: () => ({}),
+    },
+});
+
 </script>
 
 <template>
@@ -20,7 +27,19 @@ let darkMode = (
             </h2>
         </template>
 
-        <div class="py-12">
+        <!-- flash message start -->
+        <div
+            v-if="$page.props.flash.message"
+            class="p-4 mb-4 text-sm text-green-700 bg-green-100 rounded-lg dark:bg-green-200 dark:text-green-800"
+            role="alert"
+        >
+                    <span class="font-medium">
+                        {{ $page.props.flash.message }}
+                    </span>
+        </div>
+        <!-- flash message end -->
+
+        <div class="pt-12">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-xl sm:rounded-lg">
                     <CreateList />
@@ -28,10 +47,10 @@ let darkMode = (
             </div>
         </div>
 
-        <div class="py-12">
+        <div class="py-6">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-xl sm:rounded-lg">
-                    <ShowLists />
+                    <ShowLists :lists=lists />
                 </div>
             </div>
         </div>

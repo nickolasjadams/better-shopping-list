@@ -4,6 +4,8 @@ use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use App\Http\Controllers\SocialLoginController;
+use App\Http\Controllers\ShoppingListController;
+use App\Models\ShoppingList;
 
 /*
 |--------------------------------------------------------------------------
@@ -29,8 +31,18 @@ Route::middleware([
     config('jetstream.auth_session'),
     'verified',
 ])->group(function () {
+    Route::resource('lists',ShoppingListController::class);
     Route::get('/lists', function () {
-        return Inertia::render('Lists');
+        return Inertia::render('Lists',
+            [
+                'lists' => ShoppingList::paginate(15)->through(function ($list) {
+                    return [
+                        'id' => $list->id,
+                        'name' => $list->name
+                    ];
+                })
+            ]
+        );
     })->name('lists');
 });
 

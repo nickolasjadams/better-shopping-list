@@ -11,7 +11,7 @@ class ShoppingList extends Model
     use HasFactory;
 
     protected $fillable = [
-        // 'name',
+         'name',
         // 'email',
         // 'password',
     ];
