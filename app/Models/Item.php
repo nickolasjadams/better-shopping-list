@@ -11,9 +11,11 @@ class Item extends Model
     use HasFactory;
 
     protected $fillable = [
-        // 'name',
-        // 'email',
-        // 'password',
+        'done',
+        'name',
+        'quantity',
+        'instructions',
+        'shopping_list_id',
     ];
 
     /**

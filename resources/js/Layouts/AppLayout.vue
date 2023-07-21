@@ -36,18 +36,18 @@ const toggleDarkMode = () => {
     }
     darkMode = !darkMode;
     // if set via local storage previously
-    if (localStorage.getItem('color-theme')) {
-        if (localStorage.getItem('color-theme') === 'light') {
-            localStorage.setItem('color-theme', 'dark');
+    if (window.localStorage.getItem('color-theme')) {
+        if (window.localStorage.getItem('color-theme') === 'light') {
+            window.localStorage.setItem('color-theme', 'dark');
         } else {
-            localStorage.setItem('color-theme', 'light');
+            window.localStorage.setItem('color-theme', 'light');
         }
         // if NOT set via local storage previously
     } else {
         if (darkMode) {
-            localStorage.setItem('color-theme', 'light');
+            window.localStorage.setItem('color-theme', 'light');
         } else {
-            localStorage.setItem('color-theme', 'dark');
+            window.localStorage.setItem('color-theme', 'dark');
         }
     }
 }

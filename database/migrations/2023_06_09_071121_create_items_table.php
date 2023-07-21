@@ -17,9 +17,10 @@ return new class extends Migration
             $table->timestamps();
             $table->foreignIdFor(ShoppingList::class);
             $table->boolean("done")->default(false);
-            $table->string("name");
-            $table->string("quantity")->nullable();
+            $table->string("name", 100);
+            $table->decimal('quantity')->default(1);
             $table->string("instructions")->nullable();
+            // idea for later. An optional backup item for each item.
         });
     }
 

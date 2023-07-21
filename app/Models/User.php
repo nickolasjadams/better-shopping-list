@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Fortify\TwoFactorAuthenticatable;
@@ -137,7 +138,7 @@ class User extends Authenticatable
         //             : $this->defaultProfilePhotoUrl();
         // });
         // }
-            
+
         // }
     }
 
@@ -151,7 +152,7 @@ class User extends Authenticatable
             $name = trim(collect(explode(' ', $this->name))->map(function ($segment) {
                 return mb_substr($segment, 0, 1);
             })->join(' '));
-    
+
             return 'https://ui-avatars.com/api/?name='.urlencode($name).'&color=7F9CF5&background=EBF4FF';
     }
 
@@ -183,5 +184,13 @@ class User extends Authenticatable
                 Storage::disk($this->profilePhotoDisk())->delete($previous);
             }
         });
+    }
+
+    /**
+     * Get the shopping lists associated with this user.
+     */
+    public function shoppingLists(): HasMany
+    {
+        return $this->hasMany(ShoppingList::class);
     }
 }

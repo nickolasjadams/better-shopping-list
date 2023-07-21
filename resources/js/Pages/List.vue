@@ -1,9 +1,7 @@
 <script setup>
 import AppLayout from '@/Layouts/AppLayout.vue';
-import Welcome from '@/Components/Welcome.vue';
-import Show from "@/Pages/Profile/Show.vue";
-import CreateList from "@/Pages/Lists/CreateList.vue";
-import ShowLists from "@/Pages/Lists/ShowLists.vue";
+import AddListItem from "@/Pages/List/AddListItem.vue";
+import ShowListItems from "@/Pages/List/ShowListItems.vue";
 
 let darkMode = (
     window.localStorage.getItem('color-theme') === 'dark' ||
@@ -11,10 +9,14 @@ let darkMode = (
 );
 
 const props = defineProps({
-    lists: {
+    list: {
         type: Object,
         default: () => ({}),
     },
+    items: {
+        type: Array
+    }
+
 });
 
 </script>
@@ -23,7 +25,7 @@ const props = defineProps({
     <AppLayout title="Lists" :dark-mode=darkMode>
         <template #header>
             <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-                Lists
+                {{ list.name }}
             </h2>
         </template>
 
@@ -42,7 +44,7 @@ const props = defineProps({
         <div class="pt-12">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-xl sm:rounded-lg">
-                    <CreateList />
+                    <AddListItem :list=list />
                 </div>
             </div>
         </div>
@@ -50,7 +52,7 @@ const props = defineProps({
         <div class="py-6">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-xl sm:rounded-lg">
-                    <ShowLists :lists=lists />
+                    <ShowListItems :list=list :items=items />
                 </div>
             </div>
         </div>

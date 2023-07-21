@@ -6,6 +6,9 @@ use Inertia\Inertia;
 use App\Http\Controllers\SocialLoginController;
 use App\Http\Controllers\ShoppingListController;
 use App\Models\ShoppingList;
+use App\Http\Controllers\ItemController;
+use App\Models\Item;
+use Illuminate\Support\Facades\Auth;
 
 /*
 |--------------------------------------------------------------------------
@@ -32,10 +35,15 @@ Route::middleware([
     'verified',
 ])->group(function () {
     Route::resource('lists',ShoppingListController::class);
+    Route::resource('items', ItemController::class);
     Route::get('/lists', function () {
         return Inertia::render('Lists',
             [
-                'lists' => ShoppingList::paginate(15)->through(function ($list) {
+                'lists' => ShoppingList
+                                ::where('user_id', auth()->user()->id)
+                                ->orderBy('updated_at', 'DESC')
+                                ->paginate(15)
+                                ->through(function ($list) {
                     return [
                         'id' => $list->id,
                         'name' => $list->name
